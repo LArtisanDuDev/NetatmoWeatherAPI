@@ -1,0 +1,24 @@
+{
+  "name": "NetatmoWeatherAPI",
+  "version": "0.0.1",
+  "keywords": "netatmo,weather,api,esp,esp8266,esp32,espressif8266,espressif32,arduino",
+  "description": "Netatmo library to deal with Weather API",
+  "authors":
+  [
+    {
+        "name": "LArtisanDuDev",
+        "url": "https://github.com/LArtisanDuDev"
+    }
+  ],
+  "repository":
+  {
+    "type": "git",
+    "url": "https://github.com/LArtisanDuDev/NetatmoWeatherAPI.git"
+  },
+  "frameworks": "arduino",
+  "platforms": 
+  [
+    "espressif8266",
+    "espressif32"
+  ]
+}
