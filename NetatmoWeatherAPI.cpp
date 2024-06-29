@@ -2,6 +2,7 @@
 
 NetatmoWeatherAPI::NetatmoWeatherAPI()
 {
+  _debug = false;
 }
 
 NetatmoWeatherAPI::~NetatmoWeatherAPI()
@@ -29,9 +30,6 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
       Serial.println(netatmoRefreshTokenPayload);
     }
 
-    sendDataToDebugServer("getRefreshToken payload=" + netatmoRefreshTokenPayload);
-
-
     http.begin("https://api.netatmo.com/oauth2/token");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     int httpCode = http.POST(netatmoRefreshTokenPayload);
@@ -51,19 +49,12 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
         Serial.println(body);
       }
 
-      sendDataToDebugServer("getRefreshToken body=" + body);
-
-
       deserializeJson(doc, body);
       if (doc.containsKey("access_token"))
       {
-        sendDataToDebugServer("getRefreshToken contains Access");
-        
         const char *tmp = doc["access_token"].as<String>().c_str();
+
         memcpy(access_token, tmp, 58);
-        
-        sendDataToDebugServer("getRefreshToken memcpy Access");
-        
         if (_debug)
         {
           Serial.println(String("Received access token :") + String(access_token));
@@ -72,20 +63,13 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
       }
       else
       {
-        sendDataToDebugServer("getRefreshToken No Access");
-        
         Serial.println("No access_token");
       }
 
       if (doc.containsKey("refresh_token"))
       {
-        sendDataToDebugServer("getRefreshToken contains Refresh");
-        
         const char *tmp = doc["refresh_token"].as<String>().c_str();
         memcpy(refresh_token, tmp, 58);
-
-        sendDataToDebugServer("getRefreshToken memcpy Refresh");
-        
 
         if (_debug)
         {
@@ -94,7 +78,6 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
       }
       else
       {
-        sendDataToDebugServer("getRefreshToken No Refresh");
         retour = false;
       }
     }
@@ -125,7 +108,6 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
       Serial.println(netatmoGetStationsData);
     }
 
-    
     http.begin(netatmoGetStationsData);
 
     if (_debug)
@@ -150,7 +132,6 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
         Serial.println("getStationsData body :");
         Serial.println(body);
       }
-      sendDataToDebugServer("getStationsDataBody=" + body);
 
       deserializeJson(doc, body);
       if (httpCode == HTTP_CODE_FORBIDDEN)
@@ -251,26 +232,6 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
     }
   }
   return result;
-}
-
-void NetatmoWeatherAPI::sendDataToDebugServer(String str_message)
-{
-
-  if (WiFi.status() == WL_CONNECTED)
-  {
-    HTTPClient http;
-    String debugServerPayLoad = str_message;
-
-    if (_debug)
-    {
-      Serial.println(debugServerPayLoad);
-    }
-
-    http.begin("http://192.168.0.216/esp32/message=" + str_message);
-    http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    int httpCode = http.GET();
-    http.end();
-  }
 }
 
 void NetatmoWeatherAPI::dumpModule(module_struct module)

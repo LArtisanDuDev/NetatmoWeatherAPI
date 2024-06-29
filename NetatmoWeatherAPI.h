@@ -40,7 +40,7 @@ public:
   void setDebug(bool debug);
   int getStationsData(char (&access_token)[58], String device_id, unsigned long delay_timezone);
   bool getRefreshToken(char (&access_token)[58], char (&refresh_token)[58], String client_secret, String client_id);
-  
+  void dumpModule(module_struct module);
   module_struct
       // station
       NAMain,
@@ -52,9 +52,5 @@ public:
       NAModule3;
 
 protected:
-  void sendDataToDebugServer(String message);
-  void dumpModule(module_struct module);
-  
   bool _debug;
-  
 };
