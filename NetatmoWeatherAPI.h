@@ -37,6 +37,7 @@ class NetatmoWeatherAPI
 public:
   String errorMessage;
   String lastBody;
+  String allHttpCodes;
   NetatmoWeatherAPI();
   ~NetatmoWeatherAPI();
   void setDebug(bool debug);

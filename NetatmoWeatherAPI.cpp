@@ -4,6 +4,7 @@ NetatmoWeatherAPI::NetatmoWeatherAPI()
 {
   _debug = false;
   lastBody = "";
+  allHttpCodes = "";
 }
 
 NetatmoWeatherAPI::~NetatmoWeatherAPI()
@@ -34,6 +35,7 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
     http.begin("https://api.netatmo.com/oauth2/token");
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     int httpCode = http.POST(netatmoRefreshTokenPayload);
+    allHttpCodes += String(httpCode) + "|";
     if (_debug)
     {
       Serial.println("Server Response :");
@@ -120,6 +122,8 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
 
     http.addHeader("Authorization", "Bearer " + tmp_access_token);
     int httpCode = http.GET();
+    allHttpCodes += String(httpCode) + "|";
+    
     if (_debug)
     {
       Serial.println("Server Response :");
