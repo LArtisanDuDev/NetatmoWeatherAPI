@@ -35,6 +35,8 @@ struct module_struct
 class NetatmoWeatherAPI
 {
 public:
+  String errorMessage;
+  String lastBody;
   NetatmoWeatherAPI();
   ~NetatmoWeatherAPI();
   void setDebug(bool debug);

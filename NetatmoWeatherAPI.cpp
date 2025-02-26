@@ -3,6 +3,7 @@
 NetatmoWeatherAPI::NetatmoWeatherAPI()
 {
   _debug = false;
+  lastBody = "";
 }
 
 NetatmoWeatherAPI::~NetatmoWeatherAPI()
@@ -43,6 +44,8 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
     {
       DynamicJsonDocument doc(1024);
       String body = http.getString();
+      lastBody = body;
+      
       if (_debug)
       {
         Serial.println("getRefreshToken body :");
@@ -127,6 +130,8 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
     {
       DynamicJsonDocument doc(12288);
       String body = http.getString();
+      lastBody = body;
+        
       if (_debug)
       {
         Serial.println("getStationsData body :");
@@ -136,7 +141,7 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
       deserializeJson(doc, body);
       if (httpCode == HTTP_CODE_FORBIDDEN)
       {
-
+        errorMessage = doc["error"]["message"].as<String>();
         // deal with error
         unsigned long code = doc["error"]["code"].as<unsigned long>();
         switch (code)
