@@ -25,7 +25,7 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
   if (WiFi.status() == WL_CONNECTED)
   {
     HTTPClient http;
-
+    
     String netatmoRefreshTokenPayload = "client_secret=" + client_secret + "&grant_type=refresh_token&client_id=" + client_id + "&refresh_token=" + tmp_refresh_token;
     if (_debug)
     {
@@ -33,6 +33,8 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
     }
 
     http.begin("https://api.netatmo.com/oauth2/token");
+    http.setTimeout(5000);
+
     http.addHeader("Content-Type", "application/x-www-form-urlencoded");
     int httpCode = http.POST(netatmoRefreshTokenPayload);
     allHttpCodes += String(httpCode) + "|";
@@ -107,6 +109,7 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
   if (WiFi.status() == WL_CONNECTED)
   {
     HTTPClient http;
+    http.setTimeout(5000);
 
     String netatmoGetStationsData = "https://api.netatmo.com/api/getstationsdata?device_id=" + tmp_device_id + "&get_favorites=false";
     if (_debug)
@@ -115,6 +118,7 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
     }
 
     http.begin(netatmoGetStationsData);
+    http.setTimeout(5000);
 
     if (_debug)
     {
