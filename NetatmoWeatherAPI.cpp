@@ -88,7 +88,8 @@ bool NetatmoWeatherAPI::getRefreshToken(char (&access_token)[58], char (&refresh
     }
     else
     {
-      Serial.println("refreshToken Error : " + http.errorToString(httpCode));
+      errorMessage = http.errorToString(httpCode);
+      Serial.println("refreshToken Error : " + errorMessage);
     }
     http.end();
   }
@@ -232,6 +233,12 @@ int NetatmoWeatherAPI::getStationsData(char (&access_token)[58], String device_i
         }
         result = VALID_ACCESS_TOKEN;
       }
+    }
+    if (httpCode <= 0) {
+      
+        errorMessage = http.errorToString(httpCode);
+        Serial.println("getStationsData Error : " + errorMessage);
+      
     }
     http.end();
     if (_debug)
